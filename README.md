@@ -1,12 +1,13 @@
 
-Fusion 360 CAM posts processor for MPCNC 
+Fusion 360 CAM posts processor for CNC running Klipper 
 ====
 
-This is modified fork of https://github.com/guffy1234/mpcnc_posts_processor that was originally forked https://github.com/martindb/mpcnc_posts_processor.
+This is modified fork of [flyfisher604/mpcnc_post_processor](https://github.com/flyfisher604/mpcnc_post_processor) with minor changes to make it work with my CNC running Klipper.
 
 CAM posts processor for use with Fusion 360 and [MPCNC](https://www.v1engineering.com).
 
 Supported firmware:
+- Klipper (based on reprap fw)
 - Marlin 2.0
 - Repetier firmware 1.0.3 (not tested. gcode is same as for Marlin)
 - GRBL 1.1
