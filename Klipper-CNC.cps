@@ -1,14 +1,13 @@
+/// <reference path="c:\Users\david\.vscode\extensions\autodesk.hsm-post-processor-4.1.6\res\language files\globals.d.ts" />
 /*
 
-https://github.com/guffy1234/mpcnc_posts_processor
-
-MPCNC posts processor for milling and laser/plasma cutting.
-
+https://cam.autodesk.com/posts/posts/guides/Post%20Processor%20Training%20Guide.pdf
+https://cam.autodesk.com/posts/reference/classPostProcessor.html
 */
 
-description = "MPCNC Milling/Laser - Marlin 2.0, Grbl 1.1, RepRap";
-vendor = "flyfisher604";
-vendorUrl = "https://github.com/flyfisher604/mpcnc_post_processor";
+description = "MPCNC Milling/Laser - Klipper";
+vendor = "noobydp";
+vendorUrl = "https://github.com/noobydp/mpcnc_post_processor";
 
 // Internal properties
 certificationLevel = 2;
@@ -19,67 +18,84 @@ capabilities = CAPABILITY_MILLING | CAPABILITY_JET;
 machineMode = undefined; //TYPE_MILLING, TYPE_JET
 
 var eFirmware = {
-    MARLIN: 0,
-    GRBL: 1,
-    REPRAP: 2,
-    prop: {
-      2: {name: "RepRap", value: 2},
-      0: {name: "Marlin 2.x", value: 0},
-      1: {name: "Grbl 1.1", value: 1}
-    }
-  };
+  KLIPPER: 2,
+  KLIPPERCNC: 1,
+  prop: {
+    1: { name: "Klipper CNC Fork", value: 1 },
+    2: { name: "Klipper", value: 2 }
+  }
+};
 
-var fw =  eFirmware.REPRAP; 
+var fw = eFirmware.KLIPPER;
 
 var eComment = {
-    Off: 0,
-    Important: 1,
-    Info: 2,
-    Debug: 3,
-    prop: {
-      0: {name: "Off", value: 0},
-      1: {name: "Important", value: 1},
-      2: {name: "Info", value: 2},
-      3: {name: "Debug", value: 3}
-    }
+  Off: 0,
+  Important: 1,
+  Info: 2,
+  Debug: 3,
+  prop: {
+    0: { name: "Off", value: 0 },
+    1: { name: "Important", value: 1 },
+    2: { name: "Info", value: 2 },
+    3: { name: "Debug", value: 3 }
+  }
 };
 
 var eCoolant = {
-    Off: 0,
-    Flood: 1,
-    Mist: 2,
-    ThroughTool: 3,
-    Air: 4,
-    AirThroughTool: 5,
-    Suction: 6,
-    FloodMist: 7,
-    FloodThroughTool: 8,
-    prop: {
-      0: {name: "Off", value: 0},
-      1: {name: "Flood", value: 1},
-      2: {name: "Mist", value: 2},
-      3: {name: "ThroughTool", value: 3},
-      4: {name: "Air", value: 4},
-      5: {name: "AirThroughTool", value: 5},
-      6: {name: "Suction", value: 6},
-      7: {name: "Flood and Mist", value: 7},
-      8: {name: "Flood and ThroughTool", value: 8},
-    }
+  Off: 0,
+  Flood: 1,
+  Mist: 2,
+  ThroughTool: 3,
+  Air: 4,
+  AirThroughTool: 5,
+  Suction: 6,
+  FloodMist: 7,
+  FloodThroughTool: 8,
+  prop: {
+    0: { name: "Off", value: 0 },
+    1: { name: "Flood", value: 1 },
+    2: { name: "Mist", value: 2 },
+    3: { name: "ThroughTool", value: 3 },
+    4: { name: "Air", value: 4 },
+    5: { name: "AirThroughTool", value: 5 },
+    6: { name: "Suction", value: 6 },
+    7: { name: "Flood and Mist", value: 7 },
+    8: { name: "Flood and ThroughTool", value: 8 },
+  }
 };
 
+groupDefinitions = {
+  job: { title: "Job", description: "Job", collapsed: false, order: 1 },
+  framing: { title: "Framing", description: "Framing", collapsed: false, order: 2 },
+  speeds: { title: "Speeds", collapsed: false, order: 3 },
+  rapidMoves: { title: "Rapid Moves", collapsed: false, order: 4 },
+  toolChanger: { title: "Tool Changer", collapsed: true, order: 5 },
+  probing: { title: "Probing", collapsed: false, order: 6 },
+  laser: { title: "Laser", collapsed: true, order: 7 },
+  coolant: { title: "Coolant", collapsed: false, order: 8 },
+  externalFiles: { title: "External Files", collapsed: false, order: 9 }
+  // Job: {title: "Job", collapsed: false, order: 10},
+
+}
 
 // user-defined properties
 properties = {
-  job0_SelectedFirmware : fw,            // Firmware to use in special cases
-  job1_SetOriginOnStart: false,           // Set current position as 0,0,0 on start (G92)
-  job2_ManualSpindlePowerControl: false,  // Spindle motor is controlled by manual switch 
-  job3_CommentLevel: eComment.Info,      // The level of comments included 
-  job4_UseArcs: true,                    // Produce G2/G3 for arcs
-  job5_SequenceNumbers: false,           // show sequence numbers
-  job6_SequenceNumberStart: 10,          // first sequence number
-  job7_SequenceNumberIncrement: 1,       // increment for sequence numbers
-  job8_SeparateWordsWithSpace: true,     // specifies that the words should be separated with a white space 
-  job9_GoOriginOnFinish: false,           // Go X0 Y0 current Z at end
+  job0_SelectedFirmware: fw,            // Firmware to use in special cases
+  job1_startGcode: "",        // gcode macro to run at the start of the job
+  job2_endGcode: "",            // gcode macro to run at the end of the job
+  job3_SetOriginOnStart: false,           // Set current position as 0,0,0 on start (G92)
+  job4_ManualSpindlePowerControl: false,  // Spindle motor is controlled by manual switch 
+  job5_CommentLevel: eComment.Info,      // The level of comments included 
+  job6_UseArcs: false,                    // Produce G2/G3 for arcs
+  job7_SequenceNumbers: false,           // show sequence numbers
+  job8_SequenceNumberStart: 10,          // first sequence number
+  job9_SequenceNumberIncrement: 1,       // increment for sequence numbers
+  job10_SeparateWordsWithSpace: true,     // specifies that the words should be separated with a white space 
+  job11_GoOriginOnFinish: false,           // Go X0 Y0 current Z at end
+
+  frame0_frameAtStart: false,         // move around the frame/boundary of the job
+  frame1_frameLoops: 2,               // number of times to loop around the frame/boundary
+  frame2_pauseAfterFrame: true,      // after framing, pause the job
 
   fr0_TravelSpeedXY: 2400,             // High speed for travel movements X & Y (mm/min)
   fr1_TravelSpeedZ: 300,               // High speed for travel movements Z (mm/min)
@@ -117,7 +133,6 @@ properties = {
   cutter3_OnEtch: 40,                  // Percentage of power to turn on the laser/plasma cutter in etch mode
   cutter4_MarlinMode: 106,             // Marlin mode laser/plasma cutter
   cutter5_MarlinPin: 4,                // Marlin laser/plasma cutter pin for M42
-  cutter6_GrblMode: 4,                 // GRBL mode laser/plasma cutter
   cutter7_Coolant: eCoolant.Off,       // Use this coolant. F360 doesn't define a coolant for cutters
 
   cl0_coolantA_Mode: eCoolant.Off,  // Enable issuing g-codes for control Coolant channel A 
@@ -130,34 +145,38 @@ properties = {
   cl7_cust_coolantAOff: "",         // Custom Gcode command to turn off Coolant channel A
   cl8_cust_coolantBOn: "",          // Custom GCode command to turn on Coolant channel B
   cl9_cust_coolantBOff: "",         // Custom Gcode command to turn off Coolant channel B 
-
-  DuetMillingMode: "M453 P2 I0 R30000 F200", // GCode command to setup Duet3d milling mode
-  DuetLaserMode: "M452 P2 I0 R255 F200",     // GCode command to setup Duet3d laser mode
-  
 };
 
 propertyDefinitions = {
-
   job0_SelectedFirmware: {
-    title: "Job: CNC Firmware", description: "Dialect of GCode to create", group: 1,
-    type: "integer", default_mm: eFirmware.MARLIN, default_in: eFirmware.MARLIN,
+    title: "Job: CNC Firmware", description: "Dialect of GCode to create", group: "job",
+    type: "integer", default_mm: eFirmware.KLIPPER, default_in: eFirmware.KLIPPER,
     values: [
-      { title: eFirmware.prop[eFirmware.MARLIN].name, id: eFirmware.MARLIN },
-      { title: eFirmware.prop[eFirmware.GRBL].name, id: eFirmware.GRBL },
-      { title: eFirmware.prop[eFirmware.REPRAP].name, id: eFirmware.REPRAP },
+      { title: eFirmware.prop[eFirmware.KLIPPER].name, id: eFirmware.KLIPPER },
+      { title: eFirmware.prop[eFirmware.KLIPPERCNC].name, id: eFirmware.KLIPPERCNC }
     ]
   },
 
-  job1_SetOriginOnStart: {
-    title: "Job: Zero Starting Location (G92)", description: "On start set the current location as 0,0,0 (G92)", group: 1,
+  job1_startGcode: {
+    title: "Job: Macro to run at the start of the job", group: "job",
+    type: "string", default_mm: "", default_in: ""
+  },
+
+  job2_endGcode: {
+    title: "Job: Macro to run at the end of the job", group: "job",
+    type: "string", default_mm: "", default_in: ""
+  },
+
+  job3_SetOriginOnStart: {
+    title: "Job: Zero Starting Location (G92)", description: "On start set the current location as 0,0,0 (G92)", group: "job",
     type: "boolean", default_mm: false, default_in: false
   },
-  job2_ManualSpindlePowerControl: {
-    title: "Job: Manual Spindle On/Off", description: "Enable to manually turn spindle motor on/off", group: 1,
+  job4_ManualSpindlePowerControl: {
+    title: "Job: Manual Spindle On/Off", description: "Enable to manually turn spindle motor on/off", group: "job",
     type: "boolean", default_mm: false, default_in: false
   },
-  job3_CommentLevel: {
-    title: "Job: Comment Level", description: "Controls the comments include", group: 1,
+  job5_CommentLevel: {
+    title: "Job: Comment Level", description: "Controls the comments include", group: "job",
     type: "integer", default_mm: eComment.Info, default_in: eComment.Info,
     values: [
       { title: eComment.prop[eComment.Off].name, id: eComment.Off },
@@ -166,137 +185,152 @@ propertyDefinitions = {
       { title: eComment.prop[eComment.Debug].name, id: eComment.Debug },
     ]
   },
-  job4_UseArcs: {
-    title: "Job: Use Arcs", description: "Use G2/G3 g-codes fo circular movements", group: 1,
-    type: "boolean", default_mm: true, default_in: true
+  job6_UseArcs: {
+    title: "Job: Use Arcs", description: "Use G2/G3 g-codes fo circular movements", group: "job",
+    type: "boolean", default_mm: false, default_in: true
   },
-  job5_SequenceNumbers: {
-    title: "Job: Enable Line #s", description: "Show sequence numbers", group: 1,
+  job7_SequenceNumbers: {
+    title: "Job: Enable Line #s", description: "Show sequence numbers", group: "job",
     type: "boolean", default_mm: false, default_in: false
   },
-  job6_SequenceNumberStart: {
-    title: "Job: First Line #", description: "First sequence number", group: 1,
+  job8_SequenceNumberStart: {
+    title: "Job: First Line #", description: "First sequence number", group: "job",
     type: "integer", default_mm: 10, default_in: 10
   },
-  job7_SequenceNumberIncrement: {
-    title: "Job: Line # Increment", description: "Sequence number increment", group: 1,
+  job9_SequenceNumberIncrement: {
+    title: "Job: Line # Increment", description: "Sequence number increment", group: "job",
     type: "integer", default_mm: 1, default_in: 1
   },
-  job8_SeparateWordsWithSpace: {
-    title: "Job: Include Whitespace", description: "Includes whitespace seperation between text", group: 1,
+  job10_SeparateWordsWithSpace: {
+    title: "Job: Include Whitespace", description: "Includes whitespace seperation between text", group: "job",
     type: "boolean", default_mm: true, default_in: true
   },
-  job9_GoOriginOnFinish: {
-    title: "Job: At end go to 0,0", description: "Go to X0 Y0 at gcode end, Z remains unchanged", group: 1,
+  job11_GoOriginOnFinish: {
+    title: "Job: At end go to 0,0", description: "Go to X0 Y0 at gcode end, Z remains unchanged", group: "job",
     type: "boolean", default_mm: false, default_in: false
   },
-  
+
+  frame0_frameAtStart: {
+    title: "Framing: Move around frame at start", description: "Perform framing movements at the start of the job. Requires a PAUSE macro", group: "framing",
+    type: "boolean", default_mm: false, default_in: false
+  },
+
+  frame1_frameLoops: {
+    title: "Framing: Number of framing loops", description: "Number of times to move around teh frame area", group: "framing",
+    type: "integer", default_mm: 2, default_in: 2
+  },
+
+  frame2_pauseAfterFrame: {
+    title: "Framing: Pause after framing", description: "Call the PAUSE macro after framing is complete before starting the job", group: "framing",
+    type: "boolean", default_mm: true, default_in: true
+  },
+
   fr0_TravelSpeedXY: {
-    title: "Feed: Travel speed X/Y", description: "High speed for Rapid movements X & Y (mm/min; in/min)", group: 2,
+    title: "Feed: Travel speed X/Y", description: "High speed for Rapid movements X & Y (mm/min; in/min)", group: "speeds",
     type: "spatial", default_mm: 2400, default_in: 100
   },
   fr1_TravelSpeedZ: {
-    title: "Feed: Travel Speed Z", description: "High speed for Rapid movements z (mm/min; in/min)", group: 2,
+    title: "Feed: Travel Speed Z", description: "High speed for Rapid movements z (mm/min; in/min)", group: "speeds",
     type: "spatial", default_mm: 500, default_in: 12
   },
   fr2_EnforceFeedrate: {
-    title: "Feed: Enforce Feedrate", description: "Add feedrate to each movement g-code", group: 2,
+    title: "Feed: Enforce Feedrate", description: "Add feedrate to each movement g-code", group: "speeds",
     type: "boolean", default_mm: true, default_in: true
   },
   frA_ScaleFeedrate: {
-    title: "Feed: Scale Feedrate", description: "Scale feedrate based on X, Y, Z axis maximums", group: 2,
+    title: "Feed: Scale Feedrate", description: "Scale feedrate based on X, Y, Z axis maximums", group: "speeds",
     type: "boolean", default_mm: false, default_in: false
   },
   frB_MaxCutSpeedXY: {
-    title: "Feed: Max XY Cut Speed", description: "Maximum X or Y axis cut speed (mm/min; in/min)", group: 2,
+    title: "Feed: Max XY Cut Speed", description: "Maximum X or Y axis cut speed (mm/min; in/min)", group: "speeds",
     type: "spatial", default_mm: 600, default_in: 35.43
   },
   frC_MaxCutSpeedZ: {
-    title: "Feed: Max Z Cut Speed", description: "Maximum Z axis cut speed (mm/min; in/min)", group: 2,
+    title: "Feed: Max Z Cut Speed", description: "Maximum Z axis cut speed (mm/min; in/min)", group: "speeds",
     type: "spatial", default_mm: 180, default_in: 7.08
   },
   frD_MaxCutSpeedXYZ: {
-    title: "Feed: Max Toolpath Speed", description: "Maximum scaled feedrate for toolpath (mm/min; in/min)", group: 2,
+    title: "Feed: Max Toolpath Speed", description: "Maximum scaled feedrate for toolpath (mm/min; in/min)", group: "speeds",
     type: "spatial", default_mm: 1000, default_in: 39.37
   },
 
   mapD_RestoreFirstRapids: {
-    title: "Map: First G1 -> G0 Rapid", description: "Ensure move to start of a cut is with a G0 Rapid", group: 3,
+    title: "Map: First G1 -> G0 Rapid", description: "Ensure move to start of a cut is with a G0 Rapid", group: "rapidMoves",
     type: "boolean", default_mm: true, default_in: true
   },
   mapE_RestoreRapids: {
-    title: "Map: G1s -> G0 Rapids", description: "Enable to convert G1s to G0 Rapids when safe", group: 3,
+    title: "Map: G1s -> G0 Rapids", description: "Enable to convert G1s to G0 Rapids when safe", group: "rapidMoves",
     type: "boolean", default_mm: true, default_in: true
   },
   mapF_SafeZ: {
-    title: "Map: Safe Z to Rapid", description: "Must be above or equal to this value to map G1s --> G0s; constant or keyword (see docs)", group: 3,
+    title: "Map: Safe Z to Rapid", description: "Must be above or equal to this value to map G1s --> G0s; constant or keyword (see docs)", group: "rapidMoves",
     type: "string", default_mm: "Retract:5", default_in: "Retract:5"
   },
   mapG_AllowRapidZ: {
-    title: "Map: Allow Rapid Z", description: "Enable to include vertical retracts and safe descents", group: 3,
+    title: "Map: Allow Rapid Z", description: "Enable to include vertical retracts and safe descents", group: "rapidMoves",
     type: "boolean", default_mm: false, default_in: false
   },
 
   toolChange0_Enabled: {
-    title: "Tool Change: Enable", description: "Include tool change code when tool changes (bultin tool change requires LCD display)", group: 4,
+    title: "Tool Change: Enable", description: "Include tool change code when tool changes (bultin tool change requires LCD display)", group: "toolChanger",
     type: "boolean", default_mm: false, default_in: false
   },
   toolChange1_X: {
-    title: "Tool Change: X", description: "X location for tool change", group: 4,
+    title: "Tool Change: X", description: "X location for tool change", group: "toolChanger",
     type: "spatial", default_mm: 0, default_in: 0
   },
   toolChange2_Y: {
-    title: "Tool Change: Y", description: "Y location for tool change", group: 4,
+    title: "Tool Change: Y", description: "Y location for tool change", group: "toolChanger",
     type: "spatial", default_mm: 0, default_in: 0
   },
   toolChange3_Z: {
-    title: "Tool Change: Z ", description: "Z location for tool change", group: 4,
+    title: "Tool Change: Z ", description: "Z location for tool change", group: "toolChanger",
     type: "spatial", default_mm: 40, default_in: 1.6
   },
   toolChange4_DisableZStepper: {
-    title: "Tool Change: Disable Z stepper", description: "Disable Z stepper after reaching tool change location", group: 4,
+    title: "Tool Change: Disable Z stepper", description: "Disable Z stepper after reaching tool change location", group: "toolChanger",
     type: "boolean", default_mm: false, default_in: false
   },
-  
+
   probe1_OnStart: {
-    title: "Probe: On job start", description: "Execute probe gcode on job start", group: 5,
+    title: "Probe: On job start", description: "Execute probe gcode on job start", group: "probing",
     type: "boolean", default_mm: false, default_in: false
   },
   probe2_OnToolChange: {
-    title: "Probe: After Tool Change", description: "After tool change, probe Z at the current location", group: 5,
+    title: "Probe: After Tool Change", description: "After tool change, probe Z at the current location", group: "probing",
     type: "boolean", default_mm: false, default_in: false
   },
   probe3_Thickness: {
-    title: "Probe: Plate thickness", description: "Plate thickness", group: 5,
+    title: "Probe: Plate thickness", description: "Plate thickness", group: "probing",
     type: "spatial", default_mm: 0.8, default_in: 0.032
   },
   probe4_UseHomeZ: {
-    title: "Probe: Use Home Z (G28)", description: "Probe with G28 (Yes) or G38 (No)", group: 5,
+    title: "Probe: Use Home Z (G28)", description: "Probe with G28 (Yes) or G38 (No)", group: "probing",
     type: "boolean", default_mm: true, default_in: true
   },
   probe5_G38Target: {
-    title: "Probe: G38 target", description: "G38 Probing's furthest Z position", group: 5,
+    title: "Probe: G38 target", description: "G38 Probing's furthest Z position", group: "probing",
     type: "spatial", default_mm: -10, default_in: -0.5
   },
   probe6_G38Speed: {
-    title: "Probe: G38 speed", description: "G38 Probing's speed (mm/min; in/min)", group: 5,
+    title: "Probe: G38 speed", description: "G38 Probing's speed (mm/min; in/min)", group: "probing",
     type: "spatial", default_mm: 30, default_in: 1.2
   },
 
   cutter1_OnVaporize: {
-    title: "Laser: On - Vaporize", description: "Persent of power to turn on the laser/plasma cutter in vaporize mode", group: 6,
+    title: "Laser: On - Vaporize", description: "Persent of power to turn on the laser/plasma cutter in vaporize mode", group: "laser",
     type: "number", default_mm: 100, default_in: 100
   },
   cutter2_OnThrough: {
-    title: "Laser: On - Through", description: "Persent of power to turn on the laser/plasma cutter in through mode", group: 6,
+    title: "Laser: On - Through", description: "Persent of power to turn on the laser/plasma cutter in through mode", group: "laser",
     type: "number", default_mm: 80, default_in: 80
   },
   cutter3_OnEtch: {
-    title: "Laser: On - Etch", description: "Persent of power to on the laser/plasma cutter in etch mode", group: 6,
+    title: "Laser: On - Etch", description: "Persent of power to on the laser/plasma cutter in etch mode", group: "laser",
     type: "number", default_mm: 40, default_in: 40
   },
   cutter4_MarlinMode: {
-    title: "Laser: Marlin/Reprap Mode", description: "Marlin/Reprap mode of the laser/plasma cutter", group: 6,
+    title: "Laser: Mode", description: "Mode of the laser/plasma cutter", group: "laser",
     type: "integer", default_mm: 106, default_in: 106,
     values: [
       { title: "Fan - M106 S{PWM}/M107", id: 106 },
@@ -305,19 +339,11 @@ propertyDefinitions = {
     ]
   },
   cutter5_MarlinPin: {
-    title: "Laser: Marlin M42 Pin", description: "Marlin custom pin number for the laser/plasma cutter", group: 6,
+    title: "Laser: M42 Pin", description: "Custom pin number for the laser/plasma cutter", group: "laser",
     type: "integer", default_mm: 4, default_in: 4
   },
-  cutter6_GrblMode: {
-    title: "Laser: GRBL Mode", description: "GRBL mode of the laser/plasma cutter", group: 6,
-    type: "integer", default_mm: 4, default_in: 4,
-    values: [
-        { title: "M4 S{PWM}/M5 dynamic power", id: 4 },
-        { title: "M3 S{PWM}/M5 static power", id: 3 },
-    ]
-  },
   cutter7_Coolant: {
-    title: "Laser: Coolant", description: "Force a coolant to be used", group: 6,
+    title: "Laser: Coolant", description: "Force a coolant to be used", group: "laser",
     type: "integer", default_mm: eCoolant.Off, default_in: eCoolant.Off,
     values: [
       { title: eCoolant.prop[eCoolant.Off].name, id: eCoolant.Off },
@@ -333,25 +359,25 @@ propertyDefinitions = {
   },
 
   gcodeStartFile: {
-    title: "Extern: Start File", description: "File with custom Gcode for header/start (in nc folder)", group: 7,
+    title: "Extern: Start File", description: "File with custom Gcode for header/start (in nc folder)", group: "externalFiles",
     type: "file", default_mm: "", default_in: ""
   },
   gcodeStopFile: {
-    title: "Extern: Stop File", description: "File with custom Gcode for footer/end (in nc folder)", group: 7,
+    title: "Extern: Stop File", description: "File with custom Gcode for footer/end (in nc folder)", group: "externalFiles",
     type: "file", default_mm: "", default_in: ""
   },
   gcodeToolFile: {
-    title: "Extern: Tool File", description: "File with custom Gcode for tool change (in nc folder)", group: 7,
+    title: "Extern: Tool File", description: "File with custom Gcode for tool change (in nc folder)", group: "externalFiles",
     type: "file", default_mm: "", default_in: ""
   },
   gcodeProbeFile: {
-    title: "Extern: Probe File", description: "File with custom Gcode for tool probe (in nc folder)", group: 7,
+    title: "Extern: Probe File", description: "File with custom Gcode for tool probe (in nc folder)", group: "externalFiles",
     type: "file", default_mm: "", default_in: ""
   },
 
   // Coolant
   cl0_coolantA_Mode: {
-    title: "Coolant: A Mode", description: "Enable channel A when tool is set this coolant", group: 8,
+    title: "Coolant: A Mode", description: "Enable channel A when tool is set this coolant", group: "coolant",
     type: "integer", default_mm: 0, default_in: 0,
     values: [
       { title: eCoolant.prop[eCoolant.Off].name, id: eCoolant.Off },
@@ -366,7 +392,7 @@ propertyDefinitions = {
     ]
   },
   cl1_coolantB_Mode: {
-    title: "Coolant: B Mode", description: "Enable channel B when tool is set this coolant", group: 8,
+    title: "Coolant: B Mode", description: "Enable channel B when tool is set this coolant", group: "coolant",
     type: "integer", default_mm: 0, default_in: 0,
     values: [
       { title: eCoolant.prop[eCoolant.Off].name, id: eCoolant.Off },
@@ -381,18 +407,18 @@ propertyDefinitions = {
     ]
   },
   cl2_coolantAOn: {
-      title: "Coolant: A Enable", description: "GCode to turn On coolant channel A", group: 8,
-      type: "enum", default_mm: "M42 P6 S255", default_in: "M42 P6 S255",
-      values: [
-        { title: "Mrln: M42 P6 S255", id: "M42 P6 S255" },
-        { title: "Mrln: M42 P11 S255", id: "M42 P11 S255" },
-        { title: "Grbl: M7 (mist)", id: "M7" },
-        { title: "Grbl: M8 (flood)", id: "M8" },
-        { title: "Use custom", id: "Use custom" }
-      ]
+    title: "Coolant: A Enable", description: "GCode to turn On coolant channel A", group: "coolant",
+    type: "enum", default_mm: "M42 P6 S255", default_in: "M42 P6 S255",
+    values: [
+      { title: "Mrln: M42 P6 S255", id: "M42 P6 S255" },
+      { title: "Mrln: M42 P11 S255", id: "M42 P11 S255" },
+      { title: "Grbl: M7 (mist)", id: "M7" },
+      { title: "Grbl: M8 (flood)", id: "M8" },
+      { title: "Use custom", id: "Use custom" }
+    ]
   },
   cl3_coolantAOff: {
-    title: "Coolant: A Disable", description: "Gcode to turn Off coolant A", group: 8,
+    title: "Coolant: A Disable", description: "Gcode to turn Off coolant A", group: "coolant",
     type: "enum", default_mm: "M42 P6 S0", default_in: "M42 P6 S0",
     values: [
       { title: "Mrln: M42 P6 S0", id: "M42 P6 S0" },
@@ -402,7 +428,7 @@ propertyDefinitions = {
     ]
   },
   cl4_coolantBOn: {
-    title: "Coolant: B Enable", description: "GCode to turn On coolant channel B", group: 8,
+    title: "Coolant: B Enable", description: "GCode to turn On coolant channel B", group: "coolant",
     type: "enum", default_mm: "M42 P11 S255", default_in: "M42 P11 S255",
     values: [
       { title: "Mrln: M42 P11 S255", id: "M42 P11 S255" },
@@ -413,7 +439,7 @@ propertyDefinitions = {
     ]
   },
   cl5_coolantBOff: {
-    title: "Coolant: B Disable", description: "Gcode to turn Off coolant B", group: 8,
+    title: "Coolant: B Disable", description: "Gcode to turn Off coolant B", group: "coolant",
     type: "enum", default_mm: "M42 P11 S0", default_in: "M42 P11 S0",
     values: [
       { title: "Mrln: M42 P11 S0", id: "M42 P11 S0" },
@@ -423,30 +449,21 @@ propertyDefinitions = {
     ]
   },
   cl6_cust_coolantAOn: {
-    title: "Coolant: Custom A Enable", description: "Custom GCode to turn On coolant channel A", group: 8,
+    title: "Coolant: Custom A Enable", description: "Custom GCode to turn On coolant channel A", group: "coolant",
     type: "string", default_mm: "", default_in: "",
   },
   cl7_cust_coolantAOff: {
-    title: "Coolant: Custom A Disable", description: "Custom Gcode to turn Off coolant A", group: 8,
+    title: "Coolant: Custom A Disable", description: "Custom Gcode to turn Off coolant A", group: "coolant",
     type: "string", default_mm: "", default_in: "",
   },
   cl8_cust_coolantBOn: {
-    title: "Coolant: Custom B Enable", description: "Custom GCode to turn On coolant channel B", group: 8,
+    title: "Coolant: Custom B Enable", description: "Custom GCode to turn On coolant channel B", group: "coolant",
     type: "string", default_mm: "", default_in: "",
   },
   cl9_cust_coolantBOff: {
-    title: "Coolant: Custom B Disable", description: "Custom Gcode to turn Off coolant B", group: 8,
+    title: "Coolant: Custom B Disable", description: "Custom Gcode to turn Off coolant B", group: "coolant",
     type: "string", default_mm: "", default_in: "",
-  },
-
-  DuetMillingMode: {
-    title: "Duet: Milling mode", description: "GCode command to setup Duet3d milling mode", group: 9,
-    type: "string", default_mm: "M453 P2 I0 R30000 F200", default_in: "M453 P2 I0 R30000 F200"
-  },
-  DuetLaserMode: {
-    title: "Duet: Laser mode", description: "GCode command to setup Duet3d laser mode", group: 9,
-    type: "string", default_mm: "M452 P2 I0 R255 F200", default_in: "M452 P2 I0 R255 F200"
-  },
+  }
 };
 
 var sequenceNumber;
@@ -508,22 +525,17 @@ allowedCircularPlanes = undefined;
 
 // Writes the specified block.
 function writeBlock() {
-  if (properties.job5_SequenceNumbers) {
+  if (properties.job7_SequenceNumbers) {
     writeWords2("N" + sequenceNumber, arguments);
-    sequenceNumber += properties.job7_SequenceNumberIncrement;
+    sequenceNumber += properties.job9_SequenceNumberIncrement;
   } else {
     writeWords(arguments);
   }
 }
 
 function flushMotions() {
-  if (fw == eFirmware.GRBL) {
-  }
-
   // Default
-  else {
-    writeBlock(mFormat.format(400));
-  }
+  writeBlock(mFormat.format(400));
 }
 
 //---------------- Safe Rapids ----------------
@@ -535,11 +547,11 @@ var eSafeZ = {
   CLEARANCE: 3,
   ERROR: 4,
   prop: {
-    0: {name: "Const", regex: /^\d+\.?\d*$/, numRegEx: /^(\d+\.?\d*)$/, value: 0},
-    1: {name: "Feed", regex: /^Feed:/i, numRegEx: /:(\d+\.?\d*)$/, value: 1},
-    2: {name: "Retract", regex: /^Retract:/i, numRegEx: /:(\d+\.?\d*)$/, alue: 2},
-    3: {name: "Clearance", regex: /^Clearance:/i, numRegEx: /:(\d+\.?\d*)$/, value: 3},
-    4: {name: "Error", regex: /^$/, numRegEx: /^$/, value: 4}
+    0: { name: "Const", regex: /^\d+\.?\d*$/, numRegEx: /^(\d+\.?\d*)$/, value: 0 },
+    1: { name: "Feed", regex: /^Feed:/i, numRegEx: /:(\d+\.?\d*)$/, value: 1 },
+    2: { name: "Retract", regex: /^Retract:/i, numRegEx: /:(\d+\.?\d*)$/, alue: 2 },
+    3: { name: "Clearance", regex: /^Clearance:/i, numRegEx: /:(\d+\.?\d*)$/, value: 3 },
+    4: { name: "Error", regex: /^$/, numRegEx: /^$/, value: 4 }
   }
 };
 
@@ -561,9 +573,9 @@ function parseSafeZProperty() {
   if (safeZMode != eSafeZ.ERROR) {
     safeZHeightDefault = str.match(eSafeZ.prop[safeZMode].numRegEx);
 
-    if ((safeZHeightDefault == null) || (safeZHeightDefault.length !=2)) {
+    if ((safeZHeightDefault == null) || (safeZHeightDefault.length != 2)) {
       writeComment(eComment.Debug, " parseSafeZProperty: " + safeZHeightDefault);
-      writeComment(eComment.Debug, " parseSafeZProperty.length: " + (safeZHeightDefault != null? safeZHeightDefault.length : "na"));
+      writeComment(eComment.Debug, " parseSafeZProperty.length: " + (safeZHeightDefault != null ? safeZHeightDefault.length : "na"));
       writeComment(eComment.Debug, " parseSafeZProperty: Couldn't find number");
       safeZMode = eSafeZ.ERROR;
       safeZHeightDefault = 15;
@@ -577,8 +589,7 @@ function parseSafeZProperty() {
   writeComment(eComment.Debug, " parseSafeZProperty: safeZHeightDefault = " + safeZHeightDefault);
 }
 
-function safeZforSection(_section) 
-{
+function safeZforSection(_section) {
   if (properties.mapE_RestoreRapids) {
     switch (safeZMode) {
       case eSafeZ.CONST:
@@ -645,7 +656,7 @@ function safeZforSection(_section)
           writeComment(eComment.Important, " SafeZ clearance level not defined: " + safeZHeight);
         }
         break;
-        
+
       case eSafeZ.ERROR:
         safeZHeight = safeZHeightDefault;
         writeComment(eComment.Important, " >>> WARNING: " + propertyDefinitions.mapF_SafeZ.title + "format error: " + safeZHeight);
@@ -655,8 +666,8 @@ function safeZforSection(_section)
 }
 
 
-Number.prototype.round = function(places) {
-  return +(Math.round(this + "e+" + places)  + "e-" + places);
+Number.prototype.round = function (places) {
+  return +(Math.round(this + "e+" + places) + "e-" + places);
 }
 
 // Returns true if the rules to convert G1s to G0s are satisfied
@@ -734,7 +745,7 @@ var coolantChannelA = eCoolant.Off;   // The coolant running in ChannelA
 var coolantChannelB = eCoolant.Off;   // The coolant running in ChannelB
 
 function setCoolant(coolant) {
-  writeComment(eComment.Debug, " ---- Coolant: " + coolant  + " cur: " + curCoolant + " A: " + coolantChannelA + " B: " + coolantChannelB);
+  writeComment(eComment.Debug, " ---- Coolant: " + coolant + " cur: " + curCoolant + " A: " + coolantChannelA + " B: " + coolantChannelB);
 
   // If the coolant for this tool is the same as the current coolant then there is nothing to do
   if (curCoolant == coolant) {
@@ -744,13 +755,13 @@ function setCoolant(coolant) {
   // We are changing coolant, so disable any active coolant channels
   // before we switch to the other coolant
   if (coolantChannelA != eCoolant.Off) {
-    writeComment((coolant == eCoolant.Off) ? eComment.Important: eComment.Info, " >>> Coolant Channel A: " + eCoolant.prop[eCoolant.Off].name);
+    writeComment((coolant == eCoolant.Off) ? eComment.Important : eComment.Info, " >>> Coolant Channel A: " + eCoolant.prop[eCoolant.Off].name);
     coolantChannelA = eCoolant.Off;
     CoolantA(false);
   }
 
   if (coolantChannelB != eCoolant.Off) {
-    writeComment((coolant == eCoolant.Off) ? eComment.Important: eComment.Info, " >>> Coolant Channel B: " + eCoolant.prop[eCoolant.Off].name);
+    writeComment((coolant == eCoolant.Off) ? eComment.Important : eComment.Info, " >>> Coolant Channel B: " + eCoolant.prop[eCoolant.Off].name);
     coolantChannelB = eCoolant.Off;
     CoolantB(false);
   }
@@ -766,7 +777,7 @@ function setCoolant(coolant) {
   if (coolant != eCoolant.Off) {
     if (properties.cl0_coolantA_Mode == coolant) {
       writeComment(eComment.Important, " >>> Coolant Channel A: " + eCoolant.prop[coolant].name);
-      coolantChannelA =  coolant;
+      coolantChannelA = coolant;
       curCoolant = coolant;
       warn = false;
       CoolantA(true);
@@ -774,7 +785,7 @@ function setCoolant(coolant) {
 
     if (properties.cl1_coolantB_Mode == coolant) {
       writeComment(eComment.Important, " >>> Coolant Channel B: " + eCoolant.prop[coolant].name);
-      coolantChannelB =  coolant;
+      coolantChannelB = coolant;
       curCoolant = coolant;
       warn = false;
       CoolantB(true);
@@ -791,54 +802,41 @@ function setCoolant(coolant) {
 var cutterOnCurrentPower;
 
 function laserOn(power) {
-  // Firmware is Grbl
-  if (fw == eFirmware.GRBL) {
-    var laser_pwm = power * 10;
-
-    writeBlock(mFormat.format(properties.cutter6_GrblMode), sFormat.format(laser_pwm));
-  }
 
   // Default firmware
-  else {
-    var laser_pwm = power / 100 * 255;
 
-    switch (properties.cutter4_MarlinMode) {
-      case 106:
-        writeBlock(mFormat.format(106), sFormat.format(laser_pwm));
-        break;
-      case 3:
-        if (fw == eFirmware.REPRAP) {
-          writeBlock(mFormat.format(3), sFormat.format(laser_pwm));
-        } else {
-          writeBlock(mFormat.format(3), oFormat.format(laser_pwm));
-        }
-        break;
-      case 42:
-        writeBlock(mFormat.format(42), pFormat.format(properties.cutter5_MarlinPin), sFormat.format(laser_pwm));
-        break;
-    }
+  var laser_pwm = power / 100 * 255;
+
+  switch (properties.cutter4_MarlinMode) {
+    case 106:
+      writeBlock(mFormat.format(106), sFormat.format(laser_pwm));
+      break;
+    case 3:
+      if (fw == eFirmware.KLIPPER) {
+        writeBlock(mFormat.format(3), sFormat.format(laser_pwm));
+      } else {
+        writeBlock(mFormat.format(3), oFormat.format(laser_pwm));
+      }
+      break;
+    case 42:
+      writeBlock(mFormat.format(42), pFormat.format(properties.cutter5_MarlinPin), sFormat.format(laser_pwm));
+      break;
   }
 }
 
 function laserOff() {
-  // Firmware is Grbl
-  if (fw == eFirmware.GRBL) {
-    writeBlock(mFormat.format(5));
-  }
 
   // Default
-  else {
-    switch (properties.cutter4_MarlinMode) {
-      case 106:
-        writeBlock(mFormat.format(107));
-        break;
-      case 3:
-        writeBlock(mFormat.format(5));
-        break;
-      case 42:
-        writeBlock(mFormat.format(42), pFormat.format(properties.cutter5_MarlinPin), sFormat.format(0));
-        break;
-    }
+  switch (properties.cutter4_MarlinMode) {
+    case 106:
+      writeBlock(mFormat.format(107));
+      break;
+    case 3:
+      writeBlock(mFormat.format(5));
+      break;
+    case 42:
+      writeBlock(mFormat.format(42), pFormat.format(properties.cutter5_MarlinPin), sFormat.format(0));
+      break;
   }
 }
 
@@ -848,18 +846,7 @@ function laserOff() {
 function onOpen() {
   fw = properties.job0_SelectedFirmware;
 
-  // Output anything special to start the GCode
-  if (fw == eFirmware.GRBL) {
-    writeln("%");
-  }
-
-  // Configure the GCode G commands
-  if (fw == eFirmware.GRBL) {
-    gMotionModal = createModal({}, gFormat); // modal group 1 // G0-G3, ...
-  }
-  else {
-    gMotionModal = createModal({ force: true }, gFormat); // modal group 1 // G0-G3, ...
-  }
+  gMotionModal = createModal({ force: true }, gFormat); // modal group 1 // G0-G3, ...
 
   // Configure how the feedrate is formatted
   if (properties.fr2_EnforceFeedrate) {
@@ -867,10 +854,10 @@ function onOpen() {
   }
 
   // Set the starting sequence number for line numbering
-  sequenceNumber = properties.job6_SequenceNumberStart;
+  sequenceNumber = properties.job8_SequenceNumberStart;
 
   // Set the seperator used between text
-  if (!properties.job8_SeparateWordsWithSpace) {
+  if (!properties.job10_SeparateWordsWithSpace) {
     setWordSeparator("");
   }
 
@@ -886,20 +873,16 @@ function onClose() {
 
   if (properties.gcodeStopFile == "") {
     onCommand(COMMAND_COOLANT_OFF);
-    if (properties.job9_GoOriginOnFinish) {
+    if (properties.job11_GoOriginOnFinish) {
       rapidMovementsXY(0, 0);
     }
     onCommand(COMMAND_STOP_SPINDLE);
 
-    end(true);  
-    
+    end(true);
+
     writeComment(eComment.Important, " *** STOP end ***");
   } else {
     loadFile(properties.gcodeStopFile);
-  }
-
-  if (fw == eFirmware.GRBL) {
-    writeln("%");
   }
 }
 
@@ -986,22 +969,8 @@ function onSection() {
     }
   }
 
-  // Adjust the mode
-  if (fw == eFirmware.REPRAP) {
-    if (machineMode != currentSection.type) {
-      switch (currentSection.type) {
-          case TYPE_MILLING:
-              writeBlock(properties.DuetMillingMode);
-              break;
-          case TYPE_JET:
-              writeBlock(properties.DuetLaserMode);
-              break;
-      }
-    }
-  }
-
   machineMode = currentSection.type;
-  
+
   onCommand(COMMAND_START_SPINDLE);
   onCommand(COMMAND_COOLANT_ON);
 
@@ -1107,17 +1076,9 @@ function onDwell(seconds) {
     warning(localize("Dwelling time is out of range."));
   }
 
-  seconds = clamp(0.001, seconds, 99999.999);
-
-    // Firmware is Grbl
-  if (fw == eFirmware.GRBL) {
-    writeBlock(gFormat.format(4), "P" + secFormat.format(seconds));
-  }
-
-  // Default
-  else {
-    writeBlock(gFormat.format(4), "S" + secFormat.format(seconds));
-  }
+  milliseconds = clamp(0.001, seconds, 99999.999);
+  // Updated for Klipper which accepts milliseconds
+  writeBlock(gFormat.format(4), "P" + secFormat.format(seconds * 1000));
 }
 
 // Called with every parameter in the documment/section
@@ -1236,7 +1197,7 @@ function onSpindleSpeed(spindleSpeed) {
 
 function onCommand(command) {
   writeComment(eComment.Info, " " + getCommandStringId(command));
-  
+
   switch (command) {
     case COMMAND_START_SPINDLE:
       onCommand(tool.clockwise ? COMMAND_SPINDLE_CLOCKWISE : COMMAND_SPINDLE_COUNTERCLOCKWISE);
@@ -1297,16 +1258,17 @@ function resetAll() {
   fOutput.reset();
 }
 
-function writeInformation() {
-  // Calcualte the min/max ranges across all sections
+function calculateMinMax() {
   var toolZRanges = {};
   var vectorX = new Vector(1, 0, 0);
   var vectorY = new Vector(0, 1, 0);
+
   var ranges = {
     x: { min: undefined, max: undefined },
     y: { min: undefined, max: undefined },
     z: { min: undefined, max: undefined },
   };
+
   var handleMinMax = function (pair, range) {
     var rmin = range.getMinimum();
     var rmax = range.getMaximum();
@@ -1336,6 +1298,12 @@ function writeInformation() {
       }
     }
   }
+
+  return [ranges, toolZRanges];
+}
+
+function writeInformation() {
+  const [ranges, toolZRanges] = calculateMinMax();
 
   // Display the Range Table
   writeComment(eComment.Info, " ");
@@ -1373,7 +1341,7 @@ function writeInformation() {
   writeComment(eComment.Info, "   Feed: Max XY Cut Speed = " + properties.frB_MaxCutSpeedXY);
   writeComment(eComment.Info, "   Feed: Max Z Cut Speed = " + properties.frC_MaxCutSpeedZ);
   writeComment(eComment.Info, "   Feed: Max Toolpath Speed = " + properties.frD_MaxCutSpeedXYZ);
- 
+
   // Display the G1->G0 Mapping Properties
   writeComment(eComment.Info, " ");
   writeComment(eComment.Info, " G1->G0 Mapping Properties:");
@@ -1385,6 +1353,7 @@ function writeInformation() {
   writeComment(eComment.Info, " ");
 }
 
+
 function writeFirstSection() {
   // Write out the information block at the beginning of the file
   writeInformation();
@@ -1392,7 +1361,7 @@ function writeFirstSection() {
   writeComment(eComment.Important, " *** START begin ***");
 
   if (properties.gcodeStartFile == "") {
-       Start();
+    Start();
   } else {
     loadFile(properties.gcodeStartFile);
   }
@@ -1403,13 +1372,8 @@ function writeFirstSection() {
 
 // Output a comment
 function writeComment(level, text) {
-  if (level <= properties.job3_CommentLevel) {
-    if (fw == eFirmware.GRBL) {
-      writeln("(" + String(text).replace(/[\(\)]/g, "") + ")");
-    }
-    else {
-      writeln(";" + String(text).replace(/[\(\)]/g, ""));
-    }
+  if (level <= properties.job5_CommentLevel) {
+    writeln(";" + String(text).replace(/[\(\)]/g, ""));
   }
 }
 
@@ -1478,7 +1442,7 @@ function limitFeedByXYZComponents(curPos, destPos, feed) {
   // Note: if Map: G1 -> Rapid is enabled in the Properties then if the first operation in a Section is a
   // cut (which it should always be) then it will be converted to a Rapid. This prevents ever getting a zero
   // length vector.
-    if (xyz.length == 0) {
+  if (xyz.length == 0) {
     var lesserFeed = (xyLimit < zLimit) ? xyLimit : zLimit;
 
     return lesserFeed;
@@ -1568,281 +1532,213 @@ function propertyMmToUnit(_v) {
   return (_v / (unit == IN ? 25.4 : 1));
 }
 
-/*
-function mergeProperties(to, from) {
-  for (var attrname in from) {
-    to[attrname] = from[attrname];
-  }
-}
-
-function Firmware3dPrinterLike() {
-  FirmwareBase.apply(this, arguments);
-  this.spindleEnabled = false;
-}
-
-Firmware3dPrinterLike.prototype = Object.create(FirmwareBase.prototype);
-Firmware3dPrinterLike.prototype.constructor = Firmware3dPrinterLike;
-*/
 
 function Start() {
-  // Is Grbl?
-  if (fw == eFirmware.GRBL) {
-    writeBlock(gAbsIncModal.format(90)); // Set to Absolute Positioning
-    writeBlock(gFeedModeModal.format(94));
-    writeBlock(gPlaneModal.format(17));
-    writeBlock(gUnitModal.format(unit == IN ? 20 : 21));
+  // Default
+  writeComment(eComment.Info, "   Run Start Macro");
+  writeComment(eComment.Info, "   Set Absolute Positioning");
+  writeComment(eComment.Info, "   Units = " + (unit == IN ? "inch" : "mm"));
+  // writeComment(eComment.Info, "   Disable stepper timeout");
+
+  if (properties.job3_SetOriginOnStart) {
+    writeComment(eComment.Info, "   Set current position to 0,0,0");
   }
 
-  // Default
-  else {
-    writeComment(eComment.Info, "   Set Absolute Positioning");
-    writeComment(eComment.Info, "   Units = " + (unit == IN ? "inch" : "mm"));
-    // writeComment(eComment.Info, "   Disable stepper timeout");
-    if (properties.job1_SetOriginOnStart) {
-      writeComment(eComment.Info, "   Set current position to 0,0,0");
+  if (properties.job1_startGcode) {
+    writeBlock(properties.job1_startGcode)
+  }
+
+  writeBlock(gAbsIncModal.format(90)); // Set to Absolute Positioning
+  writeBlock(gUnitModal.format(unit == IN ? 20 : 21)); // Set the units
+  // writeBlock(mFormat.format(84), sFormat.format(0)); // Disable steppers timeout
+
+  if (properties.job3_SetOriginOnStart) {
+    writeBlock(gFormat.format(92), xFormat.format(0), yFormat.format(0), zFormat.format(0)); // Set origin to initial position
+  }
+
+  if (properties.probe1_OnStart && tool.number != 0 && !tool.isJetTool()) {
+    onCommand(COMMAND_TOOL_MEASURE);
+  }
+
+  if (properties.frame0_frameAtStart) {
+    // xyzFormat.format(ranges.x.min)
+    const [ranges, toolZRanges] = calculateMinMax();
+    var loops = properties.frame1_frameLoops;
+
+
+    writeComment(eComment.Info, "   Pause to allow manual Z height adjustments");
+    display_text("Manually ensure Z height is safe before framing movements, then resume");
+    writeBlock("PAUSE");
+    writeComment(eComment.Info, "   Perform Framing Loops: ");
+
+    for (var i = 0; i < loops; i++) {
+      rapidMovementsXY(ranges.x.min, ranges.y.min);
+      onDwell(1);
+
+      rapidMovementsXY(ranges.x.max, ranges.y.min);
+      onDwell(1);
+
+      rapidMovementsXY(ranges.x.max, ranges.y.max);
+      onDwell(1);
+
+      rapidMovementsXY(ranges.x.max, ranges.y.min);
+      onDwell(1);
     }
 
-    writeBlock(gAbsIncModal.format(90)); // Set to Absolute Positioning
-    writeBlock(gUnitModal.format(unit == IN ? 20 : 21)); // Set the units
-    // writeBlock(mFormat.format(84), sFormat.format(0)); // Disable steppers timeout
-
-    if (properties.job1_SetOriginOnStart) {
-      writeBlock(gFormat.format(92), xFormat.format(0), yFormat.format(0), zFormat.format(0)); // Set origin to initial position
+    if (properties.frame2_pauseAfterFrame) {
+      writeComment(eComment.Info, "   Pausing after framing loops");
+      writeBlock("PAUSE");
     }
-
-    if (properties.probe1_OnStart && tool.number != 0 && !tool.isJetTool()) {
-      onCommand(COMMAND_TOOL_MEASURE);
-    }
+    writeComment(eComment.Info, "   Finished Framing Loops");
   }
 }
 
 function end() {
-  // Is Grbl?
-  if (fw == eFirmware.GRBL) {
-    writeBlock(mFormat.format(30));
-  }
-
   // Default
-  else {
-    display_text("Job end");
+  if (properties.job2_endGcode) {
+    writeBlock(properties.job2_endGcode)
   }
+  display_text("Job end");
+
 }
 
 function spindleOn(_spindleSpeed, _clockwise) {
-  // Is Grbl?
-  if (fw == eFirmware.GRBL) {
+  // Default
+  if (properties.job4_ManualSpindlePowerControl) {
+    // For manual any positive input speed assumed as enabled. so it's just a flag
+    if (!this.spindleEnabled) {
+      writeComment(eComment.Important, " >>> Spindle Speed: Manual");
+      messageThenPause("Turn ON " + speedFormat.format(_spindleSpeed) + "RPM", "Spindle", false);
+    }
+  } else {
     writeComment(eComment.Important, " >>> Spindle Speed " + speedFormat.format(_spindleSpeed));
     writeBlock(mFormat.format(_clockwise ? 3 : 4), sOutput.format(spindleSpeed));
   }
-
-  // Default
-  else {
-    if (properties.job2_ManualSpindlePowerControl) {
-      // For manual any positive input speed assumed as enabled. so it's just a flag
-      if (!this.spindleEnabled) {
-        writeComment(eComment.Important, " >>> Spindle Speed: Manual");
-        askUser("Turn ON " + speedFormat.format(_spindleSpeed) + "RPM", "Spindle", false);
-      }
-    } else {
-      writeComment(eComment.Important, " >>> Spindle Speed " + speedFormat.format(_spindleSpeed));
-      writeBlock(mFormat.format(_clockwise ? 3 : 4), sOutput.format(spindleSpeed));
-    }
-    this.spindleEnabled = true;
-  }
+  this.spindleEnabled = true;
 }
 
 function spindleOff() {
-  // Is Grbl?
-  if (fw == eFirmware.GRBL) {
+  //Default
+
+  if (properties.job4_ManualSpindlePowerControl) {
+    writeBlock(mFormat.format(300), sFormat.format(300), pFormat.format(3000));
+    messageThenPause("Turn OFF spindle", "Spindle", false);
+  } else {
     writeBlock(mFormat.format(5));
   }
-
-  //Default
-  else {
-    if (properties.job2_ManualSpindlePowerControl) {
-      writeBlock(mFormat.format(300), sFormat.format(300), pFormat.format(3000));
-      askUser("Turn OFF spindle", "Spindle", false);
-    } else {
-      writeBlock(mFormat.format(5));
-    }
-    this.spindleEnabled = false;
-  }
+  this.spindleEnabled = false;
 }
 
 function display_text(txt) {
-  // Firmware is Grbl
-  if (fw == eFirmware.GRBL) {
-    // Don't display text
-  }
+  // Default - Update display
+  writeBlock(mFormat.format(117), (properties.job10_SeparateWordsWithSpace ? "" : " ") + txt);
 
-  // Default
-  else {
-    writeBlock(mFormat.format(117), (properties.job8_SeparateWordsWithSpace ? "" : " ") + txt);
-  }
+  // Also write message in console
+  writeBlock(mFormat.format(118), (properties.job10_SeparateWordsWithSpace ? "" : " ") + txt);
 }
 
 function circular(clockwise, cx, cy, cz, x, y, z, feed) {
-  if (!properties.job4_UseArcs) {
+  if (!properties.job6_UseArcs) {
     linearize(tolerance);
     return;
   }
 
   var start = getCurrentPosition();
 
-  // Firmware is Grbl
-  if (fw == eFirmware.GRBL) {
-    if (isFullCircle()) {
-        if (isHelical()) {
-            linearize(tolerance);
-            return;
-        }
-        switch (getCircularPlane()) {
-            case PLANE_XY:
-                writeBlock(gPlaneModal.format(17), gMotionModal.format(clockwise ? 2 : 3), xOutput.format(x), iOutput.format(cx - start.x, 0), jOutput.format(cy - start.y, 0), fOutput.format(feed));
-                break;
-            case PLANE_ZX:
-                writeBlock(gPlaneModal.format(18), gMotionModal.format(clockwise ? 2 : 3), zOutput.format(z), iOutput.format(cx - start.x, 0), kOutput.format(cz - start.z, 0), fOutput.format(feed));
-                break;
-            case PLANE_YZ:
-                writeBlock(gPlaneModal.format(19), gMotionModal.format(clockwise ? 2 : 3), yOutput.format(y), jOutput.format(cy - start.y, 0), kOutput.format(cz - start.z, 0), fOutput.format(feed));
-                break;
-            default:
-                linearize(tolerance);
-        }
-    } else {
-        switch (getCircularPlane()) {
-            case PLANE_XY:
-                writeBlock(gPlaneModal.format(17), gMotionModal.format(clockwise ? 2 : 3), xOutput.format(x), yOutput.format(y), zOutput.format(z), iOutput.format(cx - start.x, 0), jOutput.format(cy - start.y, 0), fOutput.format(feed));
-                break;
-            case PLANE_ZX:
-                writeBlock(gPlaneModal.format(18), gMotionModal.format(clockwise ? 2 : 3), xOutput.format(x), yOutput.format(y), zOutput.format(z), iOutput.format(cx - start.x, 0), kOutput.format(cz - start.z, 0), fOutput.format(feed));
-                break;
-            case PLANE_YZ:
-                writeBlock(gPlaneModal.format(19), gMotionModal.format(clockwise ? 2 : 3), xOutput.format(x), yOutput.format(y), zOutput.format(z), jOutput.format(cy - start.y, 0), kOutput.format(cz - start.z, 0), fOutput.format(feed));
-                break;
-            default:
-                linearize(tolerance);
-        }
+  // Default
+  // Marlin supports arcs only on XY plane
+  // NEEDS INVESTIGATING - KLIPPER SUPPORTS ARCS ON ALL PLANES
+
+  if (isFullCircle()) {
+    if (isHelical()) {
+      linearize(tolerance);
+      return;
+    }
+    switch (getCircularPlane()) {
+      case PLANE_XY:
+        writeBlock(gMotionModal.format(clockwise ? 2 : 3), xOutput.format(x), iOutput.format(cx - start.x, 0), jOutput.format(cy - start.y, 0), fOutput.format(feed));
+        break;
+      default:
+        linearize(tolerance);
+    }
+  } else {
+    switch (getCircularPlane()) {
+      case PLANE_XY:
+        writeBlock(gMotionModal.format(clockwise ? 2 : 3), xOutput.format(x), yOutput.format(y), zOutput.format(z), iOutput.format(cx - start.x, 0), jOutput.format(cy - start.y, 0), fOutput.format(feed));
+        break;
+      default:
+        linearize(tolerance);
     }
   }
 
-  // Default
-  else {
-    // Marlin supports arcs only on XY plane
-    if (isFullCircle()) {
-      if (isHelical()) {
-        linearize(tolerance);
-        return;
-      }
-      switch (getCircularPlane()) {
-        case PLANE_XY:
-          writeBlock(gMotionModal.format(clockwise ? 2 : 3), xOutput.format(x), iOutput.format(cx - start.x, 0), jOutput.format(cy - start.y, 0), fOutput.format(feed));
-          break;
-        default:
-          linearize(tolerance);
-      }
-    } else {
-      switch (getCircularPlane()) {
-        case PLANE_XY:
-          writeBlock(gMotionModal.format(clockwise ? 2 : 3), xOutput.format(x), yOutput.format(y), zOutput.format(z), iOutput.format(cx - start.x, 0), jOutput.format(cy - start.y, 0), fOutput.format(feed));
-          break;
-        default:
-          linearize(tolerance);
-      }
-    }
-  }
 }
 
-function askUser(text, title, allowJog) {
-  // Firmware is RepRap?
-  if (fw == eFirmware.REPRAP) {
-    var v1 = " P\"" + text + "\" R\"" + title + "\" S3";
-    var v2 = allowJog ? " X1 Y1 Z1" : "";
-    writeBlock(mFormat.format(291), (properties.job8_SeparateWordsWithSpace ? "" : " ") + v1 + v2);
-  }
-
+function messageThenPause(text, title, allowJog) {
   // Default
-  else {
-    writeBlock(mFormat.format(0), (properties.job8_SeparateWordsWithSpace ? "" : " ") + text);
-  }
+  writeBlock(mFormat.format(117), (properties.job10_SeparateWordsWithSpace ? "" : " ") + text);
+  writeBlock(mFormat.format(118), (properties.job10_SeparateWordsWithSpace ? "" : " ") + text);
+  writeBlock("PAUSE");
 }
 
 function toolChange() {
-  // Grbl tool change?
-  if (fw == eFirmware.GRBL) {
-    
-    writeBlock(mFormat.format(6), tFormat.format(tool.number));
-    writeBlock(gFormat.format(54));
-  }
 
   // Default tool change
-  else
-  {
-    flushMotions();
+  flushMotions();
 
-    // Go to tool change position
-    onRapid(propertyMmToUnit(properties.toolChange1_X), propertyMmToUnit(properties.toolChange2_Y), propertyMmToUnit(properties.toolChange3_Z));
-    
-    flushMotions();
-  
-    // turn off spindle and coolant
-    onCommand(COMMAND_COOLANT_OFF);
-    onCommand(COMMAND_STOP_SPINDLE);
-    if (!properties.job2_ManualSpindlePowerControl) {
-      // Beep
-      writeBlock(mFormat.format(300), sFormat.format(400), pFormat.format(2000));
-    }
-  
-    // Disable Z stepper
-    if (properties.toolChange4_DisableZStepper) {
-      askUser("Z Stepper will disabled. Wait for STOP!!", "Tool change", false);
-      writeBlock(mFormat.format(17), 'Z'); // Disable steppers timeout
-    }
-    // Ask tool change and wait user to touch lcd button
-    askUser("Tool " + tool.number + " " + tool.comment, "Tool change", true);
-  
-    // Run Z probe gcode
-    if (properties.probe2_OnToolChange && tool.number != 0) {
-      onCommand(COMMAND_TOOL_MEASURE);
-    }
+  // Go to tool change position
+  onRapid(propertyMmToUnit(properties.toolChange1_X), propertyMmToUnit(properties.toolChange2_Y), propertyMmToUnit(properties.toolChange3_Z));
+
+  flushMotions();
+
+  // turn off spindle and coolant
+  onCommand(COMMAND_COOLANT_OFF);
+  onCommand(COMMAND_STOP_SPINDLE);
+  if (!properties.job4_ManualSpindlePowerControl) {
+    // Beep
+    writeBlock(mFormat.format(300), sFormat.format(400), pFormat.format(2000));
+  }
+
+  // Disable Z stepper
+  if (properties.toolChange4_DisableZStepper) {
+    messageThenPause("Z Stepper will disabled. Wait for STOP!!", "Tool change", false);
+    writeBlock(mFormat.format(17), 'Z'); // Disable steppers timeout
+  }
+  // Ask tool change and wait user to touch lcd button
+  messageThenPause("Tool " + tool.number + " " + tool.comment, "Tool change", true);
+
+  // Run Z probe gcode
+  if (properties.probe2_OnToolChange && tool.number != 0) {
+    onCommand(COMMAND_TOOL_MEASURE);
   }
 }
 
 function probeTool() {
-  // Is Grbl?
-  if (fw == eFirmware.GRBL) {
-    writeComment(eComment.Important, " >>> WARNING: No probing implemented for GRBL");
-  }
-
   // Default
-  else {
-    writeComment(eComment.Important, " Probe to Zero Z");
-    writeComment(eComment.Info, "   Ask User to Attach the Z Probe");
-    writeComment(eComment.Info, "   Do Probing");
-    writeComment(eComment.Info, "   Set Z to probe thickness: " + zFormat.format(propertyMmToUnit(properties.probe3_Thickness)))
-    if (properties.toolChange3_Z != "") {
-      writeComment(eComment.Info, "   Retract the tool to " + propertyMmToUnit(properties.toolChange3_Z));
-    }
-    writeComment(eComment.Info, "   Ask User to Remove the Z Probe");
-
-    askUser("Attach ZProbe", "Probe", false);
-    // refer http://marlinfw.org/docs/gcode/G038.html
-    if (properties.probe4_UseHomeZ) {
-      writeBlock(gFormat.format(28), 'Z');
-    } else {
-      writeBlock(gMotionModal.format(38.3), fFormat.format(propertyMmToUnit(properties.probe6_G38Speed)), zFormat.format(propertyMmToUnit(properties.probe5_G38Target)));
-    }
-
-    let z = zFormat.format(propertyMmToUnit(properties.probe3_Thickness));
-    writeBlock(gFormat.format(92), z); // Set origin to initial position
-    
-    resetAll();
-    if (properties.toolChange3_Z != "") { // move up tool to safe height again after probing
-      rapidMovementsZ(propertyMmToUnit(properties.toolChange3_Z), false);
-    }
-    
-    flushMotions();
-
-    askUser("Detach ZProbe", "Probe", false);
+  writeComment(eComment.Important, " Probe to Zero Z");
+  writeComment(eComment.Info, "   Ask User to Attach the Z Probe");
+  writeComment(eComment.Info, "   Do Probing");
+  writeComment(eComment.Info, "   Set Z to probe thickness: " + zFormat.format(propertyMmToUnit(properties.probe3_Thickness)))
+  if (properties.toolChange3_Z != "") {
+    writeComment(eComment.Info, "   Retract the tool to " + propertyMmToUnit(properties.toolChange3_Z));
   }
+  writeComment(eComment.Info, "   Ask User to Remove the Z Probe");
+
+  messageThenPause("Attach ZProbe", "Probe", false);
+  // refer http://marlinfw.org/docs/gcode/G038.html
+  if (properties.probe4_UseHomeZ) {
+    writeBlock(gFormat.format(28), 'Z');
+  } else {
+    writeBlock(gMotionModal.format(38.3), fFormat.format(propertyMmToUnit(properties.probe6_G38Speed)), zFormat.format(propertyMmToUnit(properties.probe5_G38Target)));
+  }
+
+  let z = zFormat.format(propertyMmToUnit(properties.probe3_Thickness));
+  writeBlock(gFormat.format(92), z); // Set origin to initial position
+
+  resetAll();
+  if (properties.toolChange3_Z != "") { // move up tool to safe height again after probing
+    rapidMovementsZ(propertyMmToUnit(properties.toolChange3_Z), false);
+  }
+
+  flushMotions();
+  messageThenPause("Detach ZProbe", "Probe", false);
 }

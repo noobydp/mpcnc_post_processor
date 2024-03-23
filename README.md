@@ -7,11 +7,10 @@ This is modified fork of [flyfisher604/mpcnc_post_processor](https://github.com/
 CAM posts processor for use with Fusion 360 and [MPCNC](https://www.v1engineering.com).
 
 Supported firmware:
-- Klipper (based on reprap fw)
-- Marlin 2.0
-- Repetier firmware 1.0.3 (not tested. gcode is same as for Marlin)
-- GRBL 1.1
-- RepRap firmware (Duet3d) 
+- Klipper 
+- Klipper CNC Fork (Not yet implemented)
+
+# NOTE The docs below are outdated and several options have been changed and removed
 
 Installation:
 - The post processor consists of a single file, mpcnc.cps.
