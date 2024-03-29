@@ -1,0 +1,128 @@
+_CLIENT_EXTRUDE: Extrudes, if the extruder is hot enough
+_CLIENT_RETRACT: Retracts, if the extruder is hot enough
+_TOOLHEAD_PARK_PAUSE_CANCEL: Helper: park toolhead used in PAUSE and CANCEL_PRINT
+ACTIVATE_EXTRUDER: Change the active extruder
+ADJUSTED_MOVE: 
+CANCEL_PRINT_BASE: Renamed builtin of 'CANCEL_PRINT'
+CANCEL_PRINT: Cancel the actual running print
+CHECK_WORKSPACE_XYZ: 
+CLEAR_PAUSE: Clears the current paused state without resuming the print
+CLEAR_WORKSPACE_XYZ: 
+DUMP_TMC : Read and display TMC stepper driver registers
+ECHO : 
+FIRMWARE_RESTART: Restart firmware, host, and reload config
+FORCE_MOVE: Manually move a stepper; invalidates kinematics
+FW_RESTART: 
+G0 : 
+G0.0 : Renamed builtin of 'G0'
+G1 : 
+G1.0 : Renamed builtin of 'G1'
+G17 : 
+G18 : 
+G19 : 
+G2 : 
+G2.0 : Renamed builtin of 'G2'
+G20 : 
+G21 : 
+G28 : 
+G28.0 : Renamed builtin of 'G28'
+G3 : 
+G3.0 : Renamed builtin of 'G3'
+G38.2 : G38.2 Probe toward workpiece, stop on contact, signal error if failure.
+G38.3 : G38.3 Probe toward workpiece, stop on contact.
+G38.4 : G38.4 Probe away from workpiece, stop on loss of contact, signal error if failure.
+G38.5 : G38.5 Probe away from workpiece, stop on loss of contact.
+G4 : 
+G90 : 
+G91 : 
+G92 : 
+GET_POSITION: Return information on the current location of the toolhead
+GET_STATUS_MSG: Prettyfied output from toolhead's get_status.
+HELP : Report the list of available extended G-Code commands
+INIT_TMC : Initialize TMC stepper driver registers
+M104 : 
+M105 : 
+M109 : 
+M110 : 
+M112 : 
+M114 : 
+M115 : 
+M117 : 
+M118 : 
+M119 : 
+M18 : 
+M20 : 
+M204 : 
+M21 : 
+M220 : 
+M221 : 
+M23 : 
+M24 : 
+M25 : 
+M26 : 
+M27 : 
+M28 : 
+M29 : 
+M3 : 
+M30 : 
+M4 : 
+M400 : 
+M5 : 
+M73 : 
+M82 : 
+M83 : 
+M84 : 
+MANUAL_PROBE: Start manual probe helper script
+MOVE_Y_MAX: 
+MULTIPROBE2: G38.2-style probe toward workpiece, stop on contact, signal error if failure. Usage: MULTIPROBEn PROBE_NAME=configname [X=x] [Y=x] [Z=x] [E=x]
+MULTIPROBE3: G38.3-style probe toward workpiece, stop on contact. Usage: MULTIPROBEn PROBE_NAME=configname [X=x] [Y=x] [Z=x] [E=x]
+MULTIPROBE4: G38.4-style probe away from workpiece, stop on loss of contact, signal error if failure. Usage: MULTIPROBEn PROBE_NAME=configname [X=x] [Y=x] [Z=x] [E=x]
+MULTIPROBE5: G38.5-style probe away from workpiece, stop on loss of contact. Usage: MULTIPROBEn PROBE_NAME=configname [X=x] [Y=x] [Z=x] [E=x]
+PAUSE : Pause the actual running print
+PAUSE_BASE: Renamed builtin of 'PAUSE'
+PID_CALIBRATE: Run PID calibration test
+PROBE : Probe Z-height at current XY position
+PROBE_ACCURACY: Probe Z-height accuracy at current XY position
+PROBE_CALIBRATE: Calibrate the probe's z_offset
+PROBE_WORKSPACE_Z: 
+QUERY_ADC : Report the last value of an analog pin
+QUERY_ENDSTOPS: Report on the status of each endstop
+QUERY_PROBE: Return the status of the z-probe
+RESPOND : Echo the message prepended with a prefix
+RESTART : Reload config file and restart host software
+RESTORE_GCODE_STATE: Restore a previously saved G-Code state
+RESUME : Resume the actual running print
+RESUME_BASE: Renamed builtin of 'RESUME'
+SAVE_CONFIG: Overwrite config file and restart
+SAVE_GCODE_STATE: Save G-Code coordinate state
+SDCARD_PRINT_FILE: Loads a SD file and starts the print. May include files in subdirectories.
+SDCARD_RESET_FILE: Clears a loaded SD File. Stops the print if necessary
+SET_DISPLAY_TEXT: Set or clear the display message
+SET_EXTRUDER_ROTATION_DISTANCE: Set extruder rotation distance
+SET_GCODE_OFFSET: Set a virtual offset to g-code positions
+SET_GCODE_VARIABLE: Set the value of a  variable
+SET_HEATER_TEMPERATURE: Sets a heater temperature
+SET_IDLE_TIMEOUT: Set the idle timeout in seconds
+SET_KINEMATIC_POSITION: Force a low-level kinematic position
+SET_PAUSE_AT_LAYER: Enable/disable a pause if a given layer number is reached
+SET_PAUSE_NEXT_LAYER: Enable a pause if the next layer is reached
+SET_PIN : Set the value of an output pin
+SET_PRESSURE_ADVANCE: Set pressure advance parameters
+SET_PRINT_STATS_INFO_BASE: Renamed builtin of 'SET_PRINT_STATS_INFO'
+SET_PRINT_STATS_INFO: Overwrite, to get pause_next_layer and pause_at_layer feature
+SET_STEPPER_ENABLE: Enable/disable individual stepper by name
+SET_TMC_CURRENT: Set the current of a TMC driver
+SET_TMC_FIELD: Set a register field of a TMC driver
+SET_VELOCITY_LIMIT: Set printer velocity limits
+SET_WORKSPACE_XYZ: 
+STATUS : Report the printer status
+STEPPER_BUZZ: Oscillate a given stepper to help id it
+SYNC_EXTRUDER_MOTION: Set extruder stepper motion queue
+TEMPERATURE_WAIT: Wait for a temperature on a sensor
+TUNING_TOWER: Tool to adjust a parameter at each Z height
+TURN_OFF_HEATERS: Turn off all heaters
+WORKSPACE : 
+Z_ENDSTOP_CALIBRATE: Calibrate a Z endstop
+Z_OFFSET_APPLY_ENDSTOP: Adjust the z endstop_position
+Z_OFFSET_APPLY_PROBE: Adjust the probe's z_offset
+ZERO_WORKSPACE_XYZ: 
